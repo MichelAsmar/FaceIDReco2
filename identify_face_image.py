@@ -74,10 +74,10 @@ with tf.Graph().as_default():
             print("embedding_size is: " ,embedding_size)
             print ("nrof_faces is: " ,nrof_faces)
             
-            if nrof_faces < 0:
+            if nrof_faces > 0:
                 det = bounding_boxes[:, 0:4]
                 img_size = np.asarray(frame.shape)[0:2]
-
+                print ("tracing1")
                 cropped = []
                 scaled = []
                 scaled_reshape = []
@@ -98,7 +98,8 @@ with tf.Graph().as_default():
                     print ('scaled is: ',scaled)
                     cropped.append(frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2], :])
                     cropped[i] = facenet.flip(cropped[i], False)
-                    scaled.append(emb_array[i].resize(scaled[i], (image_size, image_size), interp='bilinear'))
+                    scaled.append(misc.imresize(cropped[i], (image_size, image_size), interp='bilinear'))
+                    #scaled.append(misc.emb_array[i].resize(scaled[i], (image_size, image_size), interp='bilinear'))
                     scaled[i] = cv2.resize(scaled[i], (input_image_size,input_image_size),
                                            interpolation=cv2.INTER_CUBIC)
                     scaled[i] = facenet.prewhiten(scaled[i])
